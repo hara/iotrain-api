@@ -1,0 +1,15 @@
+{
+  "editor.formatOnSave": true,
+  "python.pythonPath": "${workspaceFolder}/.venv/bin/python",
+  "python.linting.flake8Enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.formatting.provider": "yapf",
+  "python.unitTest.unittestEnabled": false,
+  "python.unitTest.pyTestEnabled": true,
+  "python.unitTest.nosetestsEnabled": false,
+  "[python]": {
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  }
+}

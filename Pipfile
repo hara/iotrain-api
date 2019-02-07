@@ -1,0 +1,24 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+yapf = "*"
+flake8 = "*"
+mypy = "*"
+pytest = "*"
+rope = "*"
+freezegun = "*"
+pytest-cov = "*"
+
+[packages]
+explorerhat = "*"
+smbus-cffi = "*"
+awsiotpythonsdk = "*"
+
+[requires]
+python_version = "3.5"
+
+[scripts]
+test = "python -m pytest --cov-report=term-missing --cov=halalabs"
