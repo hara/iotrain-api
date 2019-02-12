@@ -4,7 +4,7 @@ import os
 from AWSIoTPythonSDK.core.shadow.deviceShadow import deviceShadow
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 
-from halalabs.iotrain import gateways, usecases, utils
+from halalabs.iotrain import gateways, motor, usecases, utils
 from halalabs.iotrain.context import DriveContext
 from halalabs.iotrain.controllers import DriveController
 from halalabs.iotrain.entities import Drive
@@ -24,7 +24,7 @@ class App:
     def start(self):
         drive = Drive()
         drive_context = DriveContext(drive)
-        motor_gateway = gateways.MotorGateway()
+        motor_gateway = gateways.MotorGateway(motor.motor())
         shadow_gateway = gateways.ShadowGateway(self.shadow)
 
         start_interactor = usecases.DriveStartInteractor(

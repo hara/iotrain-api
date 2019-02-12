@@ -6,10 +6,17 @@ from halalabs.iotrain.usecases import IMotorGateway, IShadowGateway
 
 
 class MotorGateway(IMotorGateway):
+    def __init__(self, motor):
+        self.motor = motor
+
     @utils.logging
     def control(self, direction: Direction, throttle: ThrottlePercentage):
-        utils.logger.info('direction={direction}, throttle={throttle}'.format(
-            direction=direction, throttle=throttle))
+        if direction == Direction.NEUTRAL:
+            self.motor.speed(0)
+        elif direction == Direction.FORWARD:
+            self.motor.speed(throttle.value)
+        elif direction == Direction.REVERSE:
+            self.motor.speed(throttle.value * -1)
 
 
 class ShadowGateway(IShadowGateway):
