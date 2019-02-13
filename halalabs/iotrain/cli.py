@@ -13,6 +13,15 @@ from halalabs.iotrain.entities import Drive
 class App:
     def __init__(self, shadow: deviceShadow):
         self.shadow = shadow
+        drive = Drive()
+        drive_context = DriveContext(drive)
+        motor_gateway = gateways.MotorGateway(motor.motor())
+        shadow_gateway = gateways.ShadowGateway(self.shadow)
+        start_interactor = usecases.DriveStartInteractor(
+            drive_context, shadow_gateway)
+        operate_interactor = usecases.DriveOperateInteractor(
+            drive_context, motor_gateway, shadow_gateway)
+        self.controller = DriveController(start_interactor, operate_interactor)
 
     @utils.logging
     def _delta_callback(self, payload, response_status, token):
@@ -22,18 +31,6 @@ class App:
 
     @utils.logging
     def start(self):
-        drive = Drive()
-        drive_context = DriveContext(drive)
-        motor_gateway = gateways.MotorGateway(motor.motor())
-        shadow_gateway = gateways.ShadowGateway(self.shadow)
-
-        start_interactor = usecases.DriveStartInteractor(
-            drive_context, shadow_gateway)
-
-        operate_interactor = usecases.DriveOperateInteractor(
-            drive_context, motor_gateway, shadow_gateway)
-
-        self.controller = DriveController(start_interactor, operate_interactor)
         self.controller.start()
         self.shadow.shadowRegisterDeltaCallback(self._delta_callback)
 
