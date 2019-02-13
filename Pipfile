@@ -16,6 +16,7 @@ pytest-cov = "*"
 explorerhat = "*"
 smbus-cffi = "*"
 awsiotpythonsdk = "*"
+click = "*"
 
 [requires]
 python_version = "3.5"

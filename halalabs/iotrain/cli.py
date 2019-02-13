@@ -1,8 +1,8 @@
 import json
-import os
 
 from AWSIoTPythonSDK.core.shadow.deviceShadow import deviceShadow
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
+from click import argument, command, option
 
 from halalabs.iotrain import gateways, motor, usecases, utils
 from halalabs.iotrain.context import DriveContext
@@ -42,19 +42,34 @@ class App:
         self.shadow.shadowUnregisterDeltaCallback()
 
 
-def app():
-    thing_name = os.environ['THING_NAME']
-    endpoint_host = os.environ['ENDPOINT_HOST']
-    root_ca_path = os.environ['ROOT_CA_PATH']
-    private_key_path = os.environ['PRIVATE_KEY_PATH']
-    certificate_path = os.environ['CERTIFICATE_PATH']
-
+@command()
+@argument('thing-name')
+@option('-e', '--endpoint', help='AWS IoT Core endpoint.', metavar='HOSTNAME')
+@option(
+    '-r',
+    '--root-ca',
+    default='./certs/AmazonRootCA1.pem',
+    help='Root CA file.',
+    metavar='PATH')
+@option(
+    '-p',
+    '--private-key',
+    default='./certs/private.pem.key',
+    help='Private key file.',
+    metavar='PATH')
+@option(
+    '-c',
+    '--certificate',
+    default='./certs/certificate.pem.crt',
+    help='Certificate file.',
+    metavar='PATH')
+def cli(thing_name, endpoint, root_ca, private_key, certificate):
+    """iotrain - An IoT Train app."""
     client = AWSIoTMQTTShadowClient(thing_name)
-    client.configureEndpoint(endpoint_host, 8883)
-    client.configureCredentials(root_ca_path, private_key_path,
-                                certificate_path)
+    client.configureEndpoint(endpoint, 8883)
+    client.configureCredentials(root_ca, private_key, certificate)
     client.configureConnectDisconnectTimeout(10)
-    client.configureMQTTOperationTimeout(5)
+    client.configureMQTTOperationTimeout(10)
 
     client.connect()
     try:

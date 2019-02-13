@@ -1,4 +1,4 @@
-from halalabs.iotrain.awsiot import app
+from halalabs.iotrain.cli import cli
 
 if __name__ == '__main__':
-    app()
+    cli()
