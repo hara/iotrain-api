@@ -23,7 +23,7 @@ smbus-cffi = "*"
 awsiotpythonsdk = "*"
 click = "*"
 rpi-gpio = "*"
-cffi = "*"
+cffi = "~=1.11.5"
 
 [requires]
 python_version = "3.5"
