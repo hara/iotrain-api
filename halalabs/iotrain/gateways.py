@@ -11,11 +11,11 @@ class MotorGateway(IMotorGateway):
 
     @utils.logging
     def control(self, direction: Direction, speed: Speed):
-        if direction == Direction.NEUTRAL:
+        if direction == Direction.STOP:
             self.motor.speed(0)
         elif direction == Direction.FORWARD:
             self.motor.speed(speed.value)
-        elif direction == Direction.REVERSE:
+        elif direction == Direction.BACKWARD:
             self.motor.speed(speed.value * -1)
 
 

@@ -58,11 +58,11 @@ class TestDriveOperateInputData:
         assert input_data.speed == usecases.Speed(10)
 
     def test_invalid_direction(self):
-        input_dict = {'direction': 'BACKWARD'}
+        input_dict = {'direction': 'INVALID'}
         input_data = usecases.DriveOperateInputData.from_dict(input_dict)
         assert not input_data
         assert input_data.errors[
-            0] == 'direction must be NEUTRAL or FORWARD or REVERSE'
+            0] == 'direction must be STOP or FORWARD or BACKWARD'
 
     def test_invalid_speed(self):
         input_dict = {'speed': '1'}
@@ -96,7 +96,7 @@ class TestDriveOperateInteractor:
             assert operate.call_args[0] == (input_data.direction,
                                             input_data.speed)
 
-        input_dict = {'direction': 'REVERSE'}
+        input_dict = {'direction': 'BACKWARD'}
         input_data = usecases.DriveOperateInputData.from_dict(input_dict)
         with patch.object(drive_context.drive, 'operate') as operate:
             interactor.execute(input_data)
@@ -134,7 +134,7 @@ class TestDriveOperateInteractor:
         assert motor_gateway.control.call_args[0] == (input_data.direction,
                                                       input_data.speed)
 
-        input_dict = {'direction': 'REVERSE'}
+        input_dict = {'direction': 'BACKWARD'}
         input_data = usecases.DriveOperateInputData.from_dict(input_dict)
         interactor.execute(input_data)
         assert motor_gateway.control.call_args[0] == (
@@ -171,7 +171,7 @@ class TestDriveOperateInteractor:
         assert shadow_gateway.update.call_args[0] == (input_data.direction,
                                                       input_data.speed)
 
-        input_dict = {'direction': 'REVERSE'}
+        input_dict = {'direction': 'BACKWARD'}
         input_data = usecases.DriveOperateInputData.from_dict(input_dict)
         interactor.execute(input_data)
         assert shadow_gateway.update.call_args[0] == (input_data.direction,

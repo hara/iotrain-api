@@ -49,10 +49,10 @@ class TestSpeed:
 
 class TestDriveState:
     def test_initialize(self):
-        state = entities.DriveState(entities.Direction.NEUTRAL,
+        state = entities.DriveState(entities.Direction.STOP,
                                     entities.Speed(0))
         assert UUID_PATTERN.match(state.id.value)
-        assert state.direction == entities.Direction.NEUTRAL
+        assert state.direction == entities.Direction.STOP
         assert state.speed == entities.Speed(0)
 
 
@@ -64,31 +64,31 @@ class TestDrive:
             assert UUID_PATTERN.match(drive.id.value)
             assert drive.started_at == now
             assert len(drive.history) == 1
-            assert drive.history[0].direction == entities.Direction.NEUTRAL
+            assert drive.history[0].direction == entities.Direction.STOP
             assert drive.history[0].speed == entities.Speed(0)
 
     def test_initial_state(self):
         drive = entities.Drive()
         state = drive.current_state
-        assert state.direction == entities.Direction.NEUTRAL
+        assert state.direction == entities.Direction.STOP
         assert state.speed == entities.Speed(0)
 
     def test_operate(self):
         drive = entities.Drive()
 
         state = drive.current_state
-        assert drive.operate(direction=entities.Direction.REVERSE)
+        assert drive.operate(direction=entities.Direction.BACKWARD)
         assert drive.current_state != state
-        assert drive.current_state.direction == entities.Direction.REVERSE
+        assert drive.current_state.direction == entities.Direction.BACKWARD
         assert drive.current_state.speed == entities.Speed(0)
 
         state = drive.current_state
         assert drive.operate(speed=entities.Speed(10))
         assert drive.current_state != state
-        assert drive.current_state.direction == entities.Direction.REVERSE
+        assert drive.current_state.direction == entities.Direction.BACKWARD
         assert drive.current_state.speed == entities.Speed(10)
 
         state = drive.current_state
         assert not drive.operate(
-            direction=entities.Direction.REVERSE, speed=entities.Speed(10))
+            direction=entities.Direction.BACKWARD, speed=entities.Speed(10))
         assert drive.current_state == state

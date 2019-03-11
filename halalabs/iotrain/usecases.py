@@ -92,7 +92,7 @@ class DriveOperateInputData(InputData):
                 direction = Direction[dict_['direction']]
             else:
                 invalid.add_error(
-                    'direction must be NEUTRAL or FORWARD or REVERSE')
+                    'direction must be STOP or FORWARD or BACKWARD')
         speed = None
         if dict_.get('speed'):
             if isinstance(dict_['speed'], int) and 0 <= dict_['speed'] <= 100:

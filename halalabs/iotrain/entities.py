@@ -16,9 +16,9 @@ class Id(namedtuple('Id', 'value')):
 
 
 class Direction(Enum):
-    NEUTRAL = 0
+    STOP = 0
     FORWARD = 1
-    REVERSE = 2
+    BACKWARD = 2
 
 
 class Speed:
@@ -54,7 +54,7 @@ class DriveState:
 class Drive:
     def __init__(self, id: Id = None):
         self.id = id or Id.new_id()
-        initial_state = DriveState(Direction.NEUTRAL, Speed(0))
+        initial_state = DriveState(Direction.STOP, Speed(0))
         self.history = [initial_state]
         self.started_at = datetime.now()
 
