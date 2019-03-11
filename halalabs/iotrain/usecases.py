@@ -1,7 +1,7 @@
 from abc import ABC, abstractclassmethod, abstractmethod
 
 from halalabs.iotrain import exceptions, utils
-from halalabs.iotrain.entities import Direction, ThrottlePercentage
+from halalabs.iotrain.entities import Direction, Speed
 
 
 class InputData(ABC):
@@ -37,13 +37,13 @@ class IDriveContext(ABC):
 
 class IMotorGateway(ABC):
     @abstractmethod
-    def control(self, direction: Direction, throttle: ThrottlePercentage):
+    def control(self, direction: Direction, speed: Speed):
         pass
 
 
 class IShadowGateway(ABC):
     @abstractmethod
-    def update(self, direction: Direction, throttle: ThrottlePercentage):
+    def update(self, direction: Direction, speed: Speed):
         pass
 
 
@@ -54,9 +54,9 @@ class IDriveStartInputPort(ABC):
 
 
 class DriveStartOutputData:
-    def __init__(self, direction: Direction, throttle: ThrottlePercentage):
+    def __init__(self, direction: Direction, speed: Speed):
         self.direction = direction
-        self.throttle = throttle
+        self.speed = speed
 
 
 class DriveStartInteractor(IDriveStartInputPort):
@@ -67,21 +67,19 @@ class DriveStartInteractor(IDriveStartInputPort):
     @utils.logging
     def execute(self):
         self.shadow_gateway.update(self.context.drive.current_state.direction,
-                                   self.context.drive.current_state.throttle)
+                                   self.context.drive.current_state.speed)
 
 
 class DriveOperateInputData(InputData):
-    def __init__(self,
-                 direction: Direction = None,
-                 throttle: ThrottlePercentage = None):
+    def __init__(self, direction: Direction = None, speed: Speed = None):
         self.direction = direction
-        self.throttle = throttle
+        self.speed = speed
 
     def __str__(self):
-        return '{class_}(direction={direction}, throttle={throttle})'.format(
+        return '{class_}(direction={direction}, speed={speed})'.format(
             class_=self.__class__.__name__,
             direction=self.direction,
-            throttle=self.throttle)
+            speed=self.speed)
 
     @classmethod
     @utils.logging
@@ -95,21 +93,20 @@ class DriveOperateInputData(InputData):
             else:
                 invalid.add_error(
                     'direction must be NEUTRAL or FORWARD or REVERSE')
-        throttle = None
-        if dict_.get('throttle'):
-            if isinstance(dict_['throttle'],
-                          int) and 0 <= dict_['throttle'] <= 100:
-                throttle = ThrottlePercentage(dict_['throttle'])
+        speed = None
+        if dict_.get('speed'):
+            if isinstance(dict_['speed'], int) and 0 <= dict_['speed'] <= 100:
+                speed = Speed(dict_['speed'])
             else:
-                invalid.add_error('throttle must be integer between 0 and 100')
+                invalid.add_error('speed must be integer between 0 and 100')
 
-        if direction is None and throttle is None:
-            invalid.add_error('direction or throttle must be specified')
+        if direction is None and speed is None:
+            invalid.add_error('direction or speed must be specified')
 
         if invalid.has_errors():
             return invalid
 
-        return DriveOperateInputData(direction, throttle)
+        return DriveOperateInputData(direction, speed)
 
 
 class IDriveOperateInputPort(ABC):
@@ -130,8 +127,8 @@ class DriveOperateInteractor(IDriveOperateInputPort):
         if not input:
             raise exceptions.DriveOperationError
 
-        if self.context.drive.operate(input.direction, input.throttle):
+        if self.context.drive.operate(input.direction, input.speed):
             self.motor_gateway.control(
                 self.context.drive.current_state.direction,
-                self.context.drive.current_state.throttle)
-            self.shadow_gateway.update(input.direction, input.throttle)
+                self.context.drive.current_state.speed)
+            self.shadow_gateway.update(input.direction, input.speed)

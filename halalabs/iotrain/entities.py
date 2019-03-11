@@ -21,10 +21,10 @@ class Direction(Enum):
     REVERSE = 2
 
 
-class ThrottlePercentage:
+class Speed:
     def __init__(self, value: int):
         if not (0 <= value <= 100):
-            raise ValueError('throttle_percentage must be between 0 and 100')
+            raise ValueError('speed_percentage must be between 0 and 100')
         self._value = value
 
     @property
@@ -32,41 +32,39 @@ class ThrottlePercentage:
         return self._value
 
     def __repr__(self):
-        return '<ThrottlePercentage: {value}>'.format(value=self.value)
+        return '<Speed: {value}>'.format(value=self.value)
 
     def __str__(self):
         return str(self.value)
 
     def __eq__(self, other):
-        if other is None or not isinstance(other, ThrottlePercentage):
+        if other is None or not isinstance(other, Speed):
             return False
         return self.value == other.value
 
 
 class DriveState:
-    def __init__(self, direction: Direction, throttle: ThrottlePercentage):
+    def __init__(self, direction: Direction, speed: Speed):
         self.id = Id.new_id()
         self.direction = direction
-        self.throttle = throttle
+        self.speed = speed
         self.reported_at = datetime.now()
 
 
 class Drive:
     def __init__(self, id: Id = None):
         self.id = id or Id.new_id()
-        initial_state = DriveState(Direction.NEUTRAL, ThrottlePercentage(0))
+        initial_state = DriveState(Direction.NEUTRAL, Speed(0))
         self.history = [initial_state]
         self.started_at = datetime.now()
 
-    def operate(self,
-                direction: Direction = None,
-                throttle: ThrottlePercentage = None):
+    def operate(self, direction: Direction = None, speed: Speed = None):
         new_direction = direction or self.current_state.direction
-        new_throttle = throttle or self.current_state.throttle
+        new_speed = speed or self.current_state.speed
         if (new_direction == self.current_state.direction
-                and new_throttle == self.current_state.throttle):
+                and new_speed == self.current_state.speed):
             return False
-        state = DriveState(new_direction, new_throttle)
+        state = DriveState(new_direction, new_speed)
         self.history.append(state)
         return True
 

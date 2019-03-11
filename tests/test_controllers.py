@@ -35,9 +35,8 @@ class TestDriveController:
     def test_operate(self, start, operate):
         controller = controllers.DriveController(start, operate)
         with patch.object(operate, 'execute') as execute:
-            input = {'direction': 'FORWARD', 'throttle': 10}
+            input = {'direction': 'FORWARD', 'speed': 10}
             controller.operate(input)
             assert execute.call_args[0][
                 0].direction == entities.Direction.FORWARD
-            assert execute.call_args[0][
-                0].throttle == entities.ThrottlePercentage(10)
+            assert execute.call_args[0][0].speed == entities.Speed(10)
