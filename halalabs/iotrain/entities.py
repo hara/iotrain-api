@@ -29,7 +29,7 @@ class Speed:
         return self.value == other.value
 
 
-class Drive:
+class Locomotive:
     def __init__(self):
         self.direction = Direction.STOP
         self.speed = Speed(0)

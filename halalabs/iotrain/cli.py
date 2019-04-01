@@ -5,23 +5,19 @@ from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 from click import argument, command, option
 
 from halalabs.iotrain import gateways, motor, usecases, utils
-from halalabs.iotrain.context import DriveContext
-from halalabs.iotrain.controllers import DriveController
-from halalabs.iotrain.entities import Drive
+from halalabs.iotrain.controllers import LocomotiveController
+from halalabs.iotrain.entities import Locomotive
 
 
 class App:
     def __init__(self, shadow: deviceShadow):
         self.shadow = shadow
-        drive = Drive()
-        drive_context = DriveContext(drive)
+        locomotive = Locomotive()
         motor_gateway = gateways.MotorGateway(motor.motor())
         shadow_gateway = gateways.ShadowGateway(self.shadow)
-        start_interactor = usecases.DriveStartInteractor(
-            drive_context, shadow_gateway)
-        operate_interactor = usecases.DriveOperateInteractor(
-            drive_context, motor_gateway, shadow_gateway)
-        self.controller = DriveController(start_interactor, operate_interactor)
+        operate_interactor = usecases.LocomotiveOperateInteractor(
+            locomotive, motor_gateway, shadow_gateway)
+        self.controller = LocomotiveController(operate_interactor)
 
     @utils.logging
     def _delta_callback(self, payload, response_status, token):
@@ -31,7 +27,6 @@ class App:
 
     @utils.logging
     def start(self):
-        self.controller.start()
         self.shadow.shadowRegisterDeltaCallback(self._delta_callback)
 
     @utils.logging

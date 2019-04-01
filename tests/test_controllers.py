@@ -5,19 +5,19 @@ import pytest
 from halalabs.iotrain import controllers, entities, usecases
 
 
-class MockDriveOperateInputPort(usecases.IDriveOperateInputPort):
+class MockLocomotiveOperateInputPort(usecases.ILocomotiveOperateInputPort):
     def execute(self, input: dict):
         pass
 
 
 @pytest.fixture
 def operate():
-    return MockDriveOperateInputPort()
+    return MockLocomotiveOperateInputPort()
 
 
-class TestDriveController:
+class TestLocomotiveController:
     def test_operate(self, operate):
-        controller = controllers.DriveController(operate)
+        controller = controllers.LocomotiveController(operate)
         with patch.object(operate, 'execute') as execute:
             input = {'direction': 'FORWARD', 'speed': 10}
             controller.operate(input)

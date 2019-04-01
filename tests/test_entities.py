@@ -1,6 +1,6 @@
 import pytest
 
-from halalabs.iotrain.entities import Direction, Drive, Speed
+from halalabs.iotrain.entities import Direction, Locomotive, Speed
 
 
 class TestSpeed:
@@ -26,15 +26,15 @@ class TestSpeed:
         assert repr(Speed(0)) == '<Speed: 0>'
 
 
-class TestDrive:
+class TestLocomotive:
     def test_init(self):
-        drive = Drive()
-        assert drive.direction == Direction.STOP
-        assert drive.speed == Speed(0)
+        locomotive = Locomotive()
+        assert locomotive.direction == Direction.STOP
+        assert locomotive.speed == Speed(0)
 
     def test_operate(self):
-        drive = Drive()
-        drive.operate(Direction.BACKWARD, Speed(10))
+        locomotive = Locomotive()
+        locomotive.operate(Direction.BACKWARD, Speed(10))
 
-        assert drive.direction == Direction.BACKWARD
-        assert drive.speed == Speed(10)
+        assert locomotive.direction == Direction.BACKWARD
+        assert locomotive.speed == Speed(10)

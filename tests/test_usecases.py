@@ -1,14 +1,13 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 
-from halalabs.iotrain import entities, exceptions, usecases
-from halalabs.iotrain.context import DriveContext
+from halalabs.iotrain import exceptions, usecases
 
 
 @pytest.fixture
-def drive_context():
-    return DriveContext(entities.Drive())
+def locomotive():
+    return MagicMock()
 
 
 @pytest.fixture
@@ -40,16 +39,16 @@ class TestInvalidInputData:
         assert not input_data
 
 
-class TestDriveOperateInputData:
+class TestLocomotiveOperateInputData:
     def test_from_dict(self):
         input_dict = {'direction': 'FORWARD', 'speed': 10}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
         assert input_data.direction == usecases.Direction.FORWARD
         assert input_data.speed == usecases.Speed(10)
 
     def test_invalid_direction(self):
         input_dict = {'direction': 'INVALID', 'speed': 10}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
         assert not input_data
         assert input_data.errors[
             0] == 'direction must be STOP or FORWARD or BACKWARD'
@@ -58,69 +57,51 @@ class TestDriveOperateInputData:
         error = 'speed must be integer between 0 and 100'
 
         input_dict = {'direction': 'FORWARD', 'speed': -1}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
         assert not input_data
         assert input_data.errors[0] == error
 
         input_dict = {'direction': 'FORWARD', 'speed': 101}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
         assert not input_data
         assert input_data.errors[0] == error
 
         input_dict = {'direction': 'FORWARD', 'speed': '1'}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
         assert not input_data
         assert input_data.errors[0] == error
 
 
-class TestDriveOperateInteractor:
-    def test_operate(self, drive_context, motor_gateway, shadow_gateway):
-        interactor = usecases.DriveOperateInteractor(
-            drive_context, motor_gateway, shadow_gateway)
+class TestLocomotiveOperateInteractor:
+    def test_operate(self, locomotive, motor_gateway, shadow_gateway):
+        interactor = usecases.LocomotiveOperateInteractor(
+            locomotive, motor_gateway, shadow_gateway)
 
         input_dict = {'direction': 'FORWARD', 'speed': 10}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
-        with patch.object(drive_context.drive, 'operate') as operate:
-            interactor.execute(input_data)
-            assert operate.call_args[0] == (input_data.direction,
-                                            input_data.speed)
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
+        interactor.execute(input_data)
+        assert locomotive.operate.call_args[0] == (input_data.direction,
+                                                   input_data.speed)
+        assert motor_gateway.control.call_args[0] == (input_data.direction,
+                                                      input_data.speed)
+        assert shadow_gateway.update.call_args[0] == (input_data.direction,
+                                                      input_data.speed)
 
-    def test_operation_error(self, drive_context, motor_gateway,
-                             shadow_gateway):
-        interactor = usecases.DriveOperateInteractor(
-            drive_context, motor_gateway, shadow_gateway)
+    def test_operation_error(self, locomotive, motor_gateway, shadow_gateway):
+        interactor = usecases.LocomotiveOperateInteractor(
+            locomotive, motor_gateway, shadow_gateway)
 
         input_dict = {'direction': 'FORWARD'}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
-        with pytest.raises(exceptions.DriveOperationError):
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
+        with pytest.raises(exceptions.LocomotiveOperationError):
             interactor.execute(input_data)
 
         input_dict = {'speed': 10}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
-        with pytest.raises(exceptions.DriveOperationError):
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
+        with pytest.raises(exceptions.LocomotiveOperationError):
             interactor.execute(input_data)
 
         input_dict = {}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
-        with pytest.raises(exceptions.DriveOperationError):
+        input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
+        with pytest.raises(exceptions.LocomotiveOperationError):
             interactor.execute(input_data)
-
-    def test_control_motor(self, drive_context, motor_gateway, shadow_gateway):
-        interactor = usecases.DriveOperateInteractor(
-            drive_context, motor_gateway, shadow_gateway)
-
-        input_dict = {'direction': 'FORWARD', 'speed': 10}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
-        interactor.execute(input_data)
-        assert motor_gateway.control.call_args[0] == (input_data.direction,
-                                                      input_data.speed)
-
-    def test_update_shadow(self, drive_context, motor_gateway, shadow_gateway):
-        interactor = usecases.DriveOperateInteractor(
-            drive_context, motor_gateway, shadow_gateway)
-
-        input_dict = {'direction': 'FORWARD', 'speed': 10}
-        input_data = usecases.DriveOperateInputData.from_dict(input_dict)
-        interactor.execute(input_data)
-        assert shadow_gateway.update.call_args[0] == (input_data.direction,
-                                                      input_data.speed)

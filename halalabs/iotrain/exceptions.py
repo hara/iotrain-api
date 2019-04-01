@@ -2,5 +2,5 @@ class IoTrainError(Exception):
     pass
 
 
-class DriveOperationError(IoTrainError):
+class LocomotiveOperationError(IoTrainError):
     pass

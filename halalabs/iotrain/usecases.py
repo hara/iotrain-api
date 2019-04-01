@@ -1,7 +1,7 @@
 from abc import ABC, abstractclassmethod, abstractmethod
 
 from halalabs.iotrain import exceptions, utils
-from halalabs.iotrain.entities import Direction, Speed
+from halalabs.iotrain.entities import Direction, Locomotive, Speed
 
 
 class InputData(ABC):
@@ -31,10 +31,6 @@ class InvalidInputData:
             class_=self.__class__.__name__, errors=self.errors)
 
 
-class IDriveContext(ABC):
-    pass
-
-
 class IMotorGateway(ABC):
     @abstractmethod
     def control(self, direction: Direction, speed: Speed):
@@ -47,7 +43,7 @@ class IShadowGateway(ABC):
         pass
 
 
-class DriveOperateInputData(InputData):
+class LocomotiveOperateInputData(InputData):
     def __init__(self, direction: Direction, speed: Speed):
         self.direction = direction
         self.speed = speed
@@ -78,29 +74,27 @@ class DriveOperateInputData(InputData):
         if invalid.has_errors():
             return invalid
 
-        return DriveOperateInputData(direction, speed)
+        return LocomotiveOperateInputData(direction, speed)
 
 
-class IDriveOperateInputPort(ABC):
+class ILocomotiveOperateInputPort(ABC):
     @abstractmethod
     def execute(self, input: dict):
         pass
 
 
-class DriveOperateInteractor(IDriveOperateInputPort):
-    def __init__(self, context: IDriveContext, motor_gateway: IMotorGateway,
+class LocomotiveOperateInteractor(ILocomotiveOperateInputPort):
+    def __init__(self, locomotive: Locomotive, motor_gateway: IMotorGateway,
                  shadow_gateway: IShadowGateway):
-        self.context = context
+        self.locomotive = locomotive
         self.motor_gateway = motor_gateway
         self.shadow_gateway = shadow_gateway
 
     @utils.logging
-    def execute(self, input: DriveOperateInputData):
+    def execute(self, input: LocomotiveOperateInputData):
         if not input:
-            raise exceptions.DriveOperationError
+            raise exceptions.LocomotiveOperationError
 
-        self.context.drive.operate(input.direction, input.speed)
-        self.motor_gateway.control(self.context.drive.direction,
-                                   self.context.drive.speed)
-        self.shadow_gateway.update(self.context.drive.direction,
-                                   self.context.drive.speed)
+        self.locomotive.operate(input.direction, input.speed)
+        self.motor_gateway.control(input.direction, input.speed)
+        self.shadow_gateway.update(input.direction, input.speed)
