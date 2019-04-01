@@ -14,7 +14,6 @@ flake8 = "*"
 mypy = "*"
 pytest = "*"
 rope = "*"
-freezegun = "*"
 pytest-cov = "*"
 
 [packages]
