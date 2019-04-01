@@ -47,31 +47,8 @@ class IShadowGateway(ABC):
         pass
 
 
-class IDriveStartInputPort(ABC):
-    @abstractmethod
-    def execute(self):
-        pass
-
-
-class DriveStartOutputData:
-    def __init__(self, direction: Direction, speed: Speed):
-        self.direction = direction
-        self.speed = speed
-
-
-class DriveStartInteractor(IDriveStartInputPort):
-    def __init__(self, context: IDriveContext, shadow_gateway: IShadowGateway):
-        self.context = context
-        self.shadow_gateway = shadow_gateway
-
-    @utils.logging
-    def execute(self):
-        self.shadow_gateway.update(self.context.drive.current_state.direction,
-                                   self.context.drive.current_state.speed)
-
-
 class DriveOperateInputData(InputData):
-    def __init__(self, direction: Direction = None, speed: Speed = None):
+    def __init__(self, direction: Direction, speed: Speed):
         self.direction = direction
         self.speed = speed
 
@@ -87,21 +64,16 @@ class DriveOperateInputData(InputData):
         invalid = InvalidInputData()
 
         direction = None
-        if dict_.get('direction'):
-            if dict_['direction'] in [d.name for d in Direction]:
-                direction = Direction[dict_['direction']]
-            else:
-                invalid.add_error(
-                    'direction must be STOP or FORWARD or BACKWARD')
-        speed = None
-        if dict_.get('speed'):
-            if isinstance(dict_['speed'], int) and 0 <= dict_['speed'] <= 100:
-                speed = Speed(dict_['speed'])
-            else:
-                invalid.add_error('speed must be integer between 0 and 100')
+        if dict_.get('direction') in [d.name for d in Direction]:
+            direction = Direction[dict_['direction']]
+        else:
+            invalid.add_error('direction must be STOP or FORWARD or BACKWARD')
 
-        if direction is None and speed is None:
-            invalid.add_error('direction or speed must be specified')
+        speed = None
+        if isinstance(dict_.get('speed'), int) and 0 <= dict_['speed'] <= 100:
+            speed = Speed(dict_['speed'])
+        else:
+            invalid.add_error('speed must be integer between 0 and 100')
 
         if invalid.has_errors():
             return invalid
@@ -127,8 +99,8 @@ class DriveOperateInteractor(IDriveOperateInputPort):
         if not input:
             raise exceptions.DriveOperationError
 
-        if self.context.drive.operate(input.direction, input.speed):
-            self.motor_gateway.control(
-                self.context.drive.current_state.direction,
-                self.context.drive.current_state.speed)
-            self.shadow_gateway.update(input.direction, input.speed)
+        self.context.drive.operate(input.direction, input.speed)
+        self.motor_gateway.control(self.context.drive.direction,
+                                   self.context.drive.speed)
+        self.shadow_gateway.update(self.context.drive.direction,
+                                   self.context.drive.speed)
