@@ -1,4 +1,4 @@
-from halalabs.iotrain.cli import cli
+from halalabs.iotrain.web import api
 
 if __name__ == '__main__':
-    cli()
+    api.run()

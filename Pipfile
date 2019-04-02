@@ -23,9 +23,11 @@ awsiotpythonsdk = "*"
 click = "*"
 rpi-gpio = "*"
 cffi = "~=1.11.5"
+responder = "*"
+graphene = "*"
 
 [requires]
-python_version = "3.5"
+python_version = "3.7"
 
 [scripts]
 test = "python -m pytest --cov-report=term-missing --cov=halalabs"

@@ -37,12 +37,6 @@ class IMotorGateway(ABC):
         pass
 
 
-class IShadowGateway(ABC):
-    @abstractmethod
-    def update(self, direction: Direction, speed: Speed):
-        pass
-
-
 class LocomotiveOperateInputData(InputData):
     def __init__(self, direction: Direction, speed: Speed):
         self.direction = direction
@@ -84,11 +78,9 @@ class ILocomotiveOperateInputPort(ABC):
 
 
 class LocomotiveOperateInteractor(ILocomotiveOperateInputPort):
-    def __init__(self, locomotive: Locomotive, motor_gateway: IMotorGateway,
-                 shadow_gateway: IShadowGateway):
+    def __init__(self, locomotive: Locomotive, motor_gateway: IMotorGateway):
         self.locomotive = locomotive
         self.motor_gateway = motor_gateway
-        self.shadow_gateway = shadow_gateway
 
     @utils.logging
     def execute(self, input: LocomotiveOperateInputData):
@@ -97,4 +89,3 @@ class LocomotiveOperateInteractor(ILocomotiveOperateInputPort):
 
         self.locomotive.operate(input.direction, input.speed)
         self.motor_gateway.control(input.direction, input.speed)
-        self.shadow_gateway.update(input.direction, input.speed)
