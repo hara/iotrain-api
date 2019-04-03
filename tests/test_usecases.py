@@ -2,16 +2,11 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from halalabs.iotrain import exceptions, usecases
+from iotrain.api import exceptions, usecases
 
 
 @pytest.fixture
 def locomotive():
-    return MagicMock()
-
-
-@pytest.fixture
-def shadow_gateway():
     return MagicMock()
 
 
@@ -73,9 +68,9 @@ class TestLocomotiveOperateInputData:
 
 
 class TestLocomotiveOperateInteractor:
-    def test_operate(self, locomotive, motor_gateway, shadow_gateway):
+    def test_operate(self, locomotive, motor_gateway):
         interactor = usecases.LocomotiveOperateInteractor(
-            locomotive, motor_gateway, shadow_gateway)
+            locomotive, motor_gateway)
 
         input_dict = {'direction': 'FORWARD', 'speed': 10}
         input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)
@@ -84,12 +79,10 @@ class TestLocomotiveOperateInteractor:
                                                    input_data.speed)
         assert motor_gateway.control.call_args[0] == (input_data.direction,
                                                       input_data.speed)
-        assert shadow_gateway.update.call_args[0] == (input_data.direction,
-                                                      input_data.speed)
 
-    def test_operation_error(self, locomotive, motor_gateway, shadow_gateway):
+    def test_operation_error(self, locomotive, motor_gateway):
         interactor = usecases.LocomotiveOperateInteractor(
-            locomotive, motor_gateway, shadow_gateway)
+            locomotive, motor_gateway)
 
         input_dict = {'direction': 'FORWARD'}
         input_data = usecases.LocomotiveOperateInputData.from_dict(input_dict)

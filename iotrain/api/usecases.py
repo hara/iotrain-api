@@ -1,7 +1,7 @@
 from abc import ABC, abstractclassmethod, abstractmethod
 
-from halalabs.iotrain import exceptions, utils
-from halalabs.iotrain.entities import Direction, Locomotive, Speed
+from iotrain.api import exceptions, utils
+from iotrain.api.entities import Direction, Locomotive, Speed
 
 
 class InputData(ABC):

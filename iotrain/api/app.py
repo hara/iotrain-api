@@ -2,9 +2,7 @@ import graphene
 import responder
 from graphql import GraphQLError
 
-from halalabs.iotrain import controllers, entities, gateways, motor, usecases
-
-api = responder.API()
+from iotrain.api import controllers, entities, gateways, motor, usecases
 
 loco = entities.Locomotive()
 gateway = gateways.MotorGateway(motor.motor())
@@ -55,6 +53,6 @@ class Mutation(graphene.ObjectType):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
+api = responder.API()
 view = responder.ext.GraphQLView(api=api, schema=schema)
-
 api.add_route("/graph", view)

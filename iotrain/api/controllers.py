@@ -1,4 +1,4 @@
-from halalabs.iotrain import usecases, utils
+from iotrain.api import usecases, utils
 
 
 class LocomotiveController:

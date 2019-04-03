@@ -1,6 +1,6 @@
-from halalabs.iotrain import utils
-from halalabs.iotrain.entities import Direction, Speed
-from halalabs.iotrain.usecases import IMotorGateway
+from iotrain.api import utils
+from iotrain.api.entities import Direction, Speed
+from iotrain.api.usecases import IMotorGateway
 
 
 class MotorGateway(IMotorGateway):

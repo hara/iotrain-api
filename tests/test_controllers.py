@@ -2,7 +2,7 @@ from unittest.mock import patch
 
 import pytest
 
-from halalabs.iotrain import controllers, entities, usecases
+from iotrain.api import controllers, entities, usecases
 
 
 class MockLocomotiveOperateInputPort(usecases.ILocomotiveOperateInputPort):

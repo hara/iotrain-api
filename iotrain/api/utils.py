@@ -1,14 +1,10 @@
-import logging
 import os
 from functools import wraps
+from logging import getLogger
 
 LOG_LEVEL = os.getenv('LOG_LEVEL', 'DEBUG')
-logger = logging.getLogger("app")
-logger.setLevel(logging.DEBUG)
-_streamHandler = logging.StreamHandler()
-_formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
-_streamHandler.setFormatter(_formatter)
-logger.addHandler(_streamHandler)
+logger = getLogger("app")
+logger.setLevel(LOG_LEVEL)
 
 
 def logging(func):

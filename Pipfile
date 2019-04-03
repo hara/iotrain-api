@@ -30,4 +30,4 @@ graphene = "*"
 python_version = "3.7"
 
 [scripts]
-test = "python -m pytest --cov-report=term-missing --cov=halalabs"
+test = "python -m pytest --cov-report=term-missing --cov=iotrain"

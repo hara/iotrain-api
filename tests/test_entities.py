@@ -1,6 +1,6 @@
 import pytest
 
-from halalabs.iotrain.entities import Direction, Locomotive, Speed
+from iotrain.api.entities import Direction, Locomotive, Speed
 
 
 class TestSpeed:
