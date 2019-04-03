@@ -9,6 +9,9 @@ gateway = gateways.MotorGateway(motor.motor())
 interactor = usecases.LocomotiveOperateInteractor(loco, gateway)
 controller = controllers.LocomotiveController(interactor)
 
+api = responder.API()
+api.add_route("/", static=True)
+
 
 class Direction(graphene.Enum):
     STOP = 0
@@ -53,6 +56,6 @@ class Mutation(graphene.ObjectType):
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
-api = responder.API()
 view = responder.ext.GraphQLView(api=api, schema=schema)
+
 api.add_route("/graph", view)
