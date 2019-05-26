@@ -9,21 +9,20 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-yapf = "*"
-flake8 = "*"
 mypy = "*"
 pytest = "*"
 rope = "*"
 pytest-cov = "*"
+black = "*"
+flake8 = "*"
 
 [packages]
 explorerhat = "*"
 smbus-cffi = "*"
-awsiotpythonsdk = "*"
-click = "*"
 rpi-gpio = "*"
-cffi = "~=1.11.5"
+cffi = "*"
 responder = "*"
+rx = "*"
 
 [requires]
 python_version = "3.7"
