@@ -12,6 +12,6 @@ class MotorGateway(IMotorGateway):
         if direction == Direction.STOP:
             self.motor.speed(0)
         elif direction == Direction.FORWARD:
-            self.motor.speed(speed.value)
-        elif direction == Direction.BACKWARD:
             self.motor.speed(speed.value * -1)
+        elif direction == Direction.BACKWARD:
+            self.motor.speed(speed.value)
