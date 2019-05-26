@@ -34,17 +34,13 @@ class OperateLocomotive(graphene.Mutation):
 
     def mutate(self, info, direction, speed):
         if speed < 0 or speed > 100:
-            raise GraphQLError('speed must be integer between 0 and 100')
+            raise GraphQLError("speed must be integer between 0 and 100")
 
-        controller.operate({
-            'direction': Direction.get(direction).name,
-            'speed': speed
-        })
+        controller.operate({"direction": Direction.get(direction).name, "speed": speed})
         loco.operate(
-            direction=entities.Direction(direction),
-            speed=entities.Speed(speed))
-        return OperateLocomotive(
-            direction=loco.direction, speed=loco.speed.value)
+            direction=entities.Direction(direction), speed=entities.Speed(speed)
+        )
+        return OperateLocomotive(direction=loco.direction, speed=loco.speed.value)
 
 
 class Query(graphene.ObjectType):

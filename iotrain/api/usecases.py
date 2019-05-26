@@ -27,8 +27,9 @@ class InvalidInputData:
         return False
 
     def __str__(self):
-        return '{class_}(errors={errors})'.format(
-            class_=self.__class__.__name__, errors=self.errors)
+        return "{class_}(errors={errors})".format(
+            class_=self.__class__.__name__, errors=self.errors
+        )
 
 
 class IMotorGateway(ABC):
@@ -43,10 +44,9 @@ class LocomotiveOperateInputData(InputData):
         self.speed = speed
 
     def __str__(self):
-        return '{class_}(direction={direction}, speed={speed})'.format(
-            class_=self.__class__.__name__,
-            direction=self.direction,
-            speed=self.speed)
+        return "{class_}(direction={direction}, speed={speed})".format(
+            class_=self.__class__.__name__, direction=self.direction, speed=self.speed
+        )
 
     @classmethod
     @utils.logging
@@ -54,16 +54,16 @@ class LocomotiveOperateInputData(InputData):
         invalid = InvalidInputData()
 
         direction = None
-        if dict_.get('direction') in [d.name for d in Direction]:
-            direction = Direction[dict_['direction']]
+        if dict_.get("direction") in [d.name for d in Direction]:
+            direction = Direction[dict_["direction"]]
         else:
-            invalid.add_error('direction must be STOP or FORWARD or BACKWARD')
+            invalid.add_error("direction must be STOP or FORWARD or BACKWARD")
 
         speed = None
-        if isinstance(dict_.get('speed'), int) and 0 <= dict_['speed'] <= 100:
-            speed = Speed(dict_['speed'])
+        if isinstance(dict_.get("speed"), int) and 0 <= dict_["speed"] <= 100:
+            speed = Speed(dict_["speed"])
         else:
-            invalid.add_error('speed must be integer between 0 and 100')
+            invalid.add_error("speed must be integer between 0 and 100")
 
         if invalid.has_errors():
             return invalid

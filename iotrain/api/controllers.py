@@ -2,8 +2,7 @@ from iotrain.api import usecases, utils
 
 
 class LocomotiveController:
-    def __init__(self,
-                 operate_input_port: usecases.ILocomotiveOperateInputPort):
+    def __init__(self, operate_input_port: usecases.ILocomotiveOperateInputPort):
         self.operate_input_port = operate_input_port
 
     @utils.logging
