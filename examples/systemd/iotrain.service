@@ -1,0 +1,15 @@
+[Unit]
+Description=IoTrain
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+WorkingDirectory=/opt/iotrain
+EnvironmentFile=/opt/iotrain/.env
+ExecStart=/home/pi/.pyenv/shims/pipenv run python -m iotrain.api
+User=pi
+Group=pi
+
+[Install]
+WantedBy=multi-user.target

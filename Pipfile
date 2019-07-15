@@ -9,24 +9,26 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-yapf = "*"
-flake8 = "*"
 mypy = "*"
 pytest = "*"
 rope = "*"
-freezegun = "*"
 pytest-cov = "*"
+black = "*"
+flake8 = "*"
 
 [packages]
 explorerhat = "*"
 smbus-cffi = "*"
-awsiotpythonsdk = "*"
-click = "*"
 rpi-gpio = "*"
-cffi = "~=1.11.5"
+cffi = "*"
+responder = "*"
+rx = "*"
 
 [requires]
-python_version = "3.5"
+python_version = "3.7"
 
 [scripts]
-test = "python -m pytest --cov-report=term-missing --cov=halalabs"
+test = "python -m pytest --cov-report=term-missing --cov=iotrain"
+
+[pipenv]
+allow_prereleases = true

@@ -1,4 +1,4 @@
-from halalabs.iotrain import utils
+from iotrain.api import utils
 
 explorerhat = None
 try:
@@ -10,7 +10,7 @@ except ImportError:
 
 class DummyMotor:
     def speed(self, value: int):
-        utils.logger.info('speed={value}'.format(value=value))
+        utils.logger.info("speed={value}".format(value=value))
 
 
 @utils.logging
